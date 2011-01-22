@@ -121,11 +121,12 @@ while( my $filename = shift @ARGV )
 				
 				my $currentdate		= $row{'Begin Date'};
 				my $country			= $row{'Country Code'};
-				my $programid		= $row{'Vendor Identifier'};
+				my $programid		= $row{'SKU'};
 				my $units			= $row{'Units'};
-				my $royaltyprice	= $row{'Royalty Price'};
+				my $royaltyprice	= $row{'Developer Proceeds'};
+				my $royaltycurrency	= $row{'Currency of Proceeds'};
 				
-				my $conversionrate 	= $conversiontable{$row{'Royalty Currency'}};
+				my $conversionrate 	= $conversiontable{$royaltycurrency};
 				
 				my $earnings 		= 0.0;
 	
@@ -139,12 +140,12 @@ while( my $filename = shift @ARGV )
 					{
 						printf STDERR "Key:%10s Value:%s\n",$key,$value;
 					}
-					die 'Conversion rate for '.$row{'Royalty Currency'}." not known ($conversionrate)\n";
+					die 'Conversion rate for '.$royaltycurrency." not known ($conversionrate)\n";
 				}
 				
-				$programname{$programid} 								= $row{'Title / Episode / Season'};
+				$programname{$programid} 								= $row{'Title'};
 				$countries{$programid}{$country}						+= $earnings;
-				$table{$currentdate}{$programid}{$country}{($row{'Royalty Price'}>0?'units':'freeunits')}	+= $units;
+				$table{$currentdate}{$programid}{$country}{($royaltyprice>0?'units':'freeunits')}	+= $units;
 				$table{$currentdate}{$programid}{$country}{earnings}	+= $earnings;
 			}
 		}
